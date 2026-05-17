@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"c:\\\\nithin_projects\\\\Shatursh-acupuncture-clinic\")"
+    ]
+  }
+}
