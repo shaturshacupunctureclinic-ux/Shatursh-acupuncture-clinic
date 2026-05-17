@@ -11,7 +11,7 @@ const CONFIG = {
       philosophy: "Healing naturally through holistic acupuncture care.",
       vision: "To inspire healthier living through safe and effective natural therapies.",
       experience: "3+",
-      patients: "5000+",
+      patients: "500+",
       treatments: "13+",
       branches: "Tiruppur & Erode",
       membership: "ATAMA Member",
@@ -31,7 +31,7 @@ const CONFIG = {
     whatsapp: "919876543210",
     whatsappMessage:
       "Hello Dr. Nithin! I would like to book an appointment at Shatursh Healthcare Centre.",
-    email: "info@shaturshealthcare.com",
+    email: "shaturshacupunctureclinic@gamail.com",
     address: "Erode & Tiruppur, Tamil Nadu",
     mapEmbedUrl:
       "https://www.openstreetmap.org/export/embed.html?bbox=77.6807%2C11.3327%2C77.7407%2C11.3727&layer=mapnik",

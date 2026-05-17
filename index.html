@@ -16,8 +16,7 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- AOS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <!-- AOS replaced by native scroll-reveal in main.js -->
 
   <!-- Swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -37,8 +36,12 @@
 <div id="preloader">
   <div class="preloader-bubbles"></div>
   <div class="preloader-logo">
-    <div class="preloader-icon">
-      <i class="fas fa-leaf"></i>
+    <div class="preloader-img-wrap">
+      <img
+        src="https://vzskwrybmhzbshmlosbs.supabase.co/storage/v1/object/public/shaturshacupunctureclinic/Shaturshlogo.png"
+        alt="Shatursh Healthcare Logo"
+        class="preloader-img"
+      />
     </div>
     <div class="preloader-title">Shatursh Healthcare</div>
     <div class="preloader-sub">NATURAL HEALING CENTRE</div>
@@ -96,29 +99,33 @@
 
   <div class="hero-container">
     <!-- LEFT: Content -->
-    <div class="hero-content" data-aos="fade-right" data-aos-duration="800">
+    <div class="hero-content hero-anim-left">
       <div class="hero-badge">
-        <i class="fas fa-circle-dot"></i>
-        Trusted Holistic Healthcare
+        <i class="fas fa-leaf"></i>
+        Trusted Holistic Healthcare Centre
       </div>
 
       <h1 class="hero-title">
-        Welcome to<br />
-        <span class="highlight">Shatursh Healthcare</span><br />
-        Centre
+        Your Journey to<br />
+        <span class="highlight">Natural Healing</span><br />
+        Starts Here
       </h1>
 
+      <!-- Standalone typewriter block
+      <div class="hero-tw-block">
+        <span class="hero-tw-label">We specialize in</span>
+        <span class="hero-tw-word"><span class="hero-typewriter"></span><span class="typewriter-cursor"></span></span>
+      </div> -->
+
       <p class="hero-subtitle">
-        Your Journey to
-        <span class="hero-typewriter-line"><span class="hero-typewriter"></span><span class="typewriter-cursor"></span></span>
-        Starts Here. We combine ancient healing wisdom with modern therapeutic methods to restore your body's natural balance.
+        Dr. Nithin R combines ancient healing wisdom with modern therapeutic methods — drug-free, non-surgical, and personalized for lasting relief.
       </p>
 
       <div class="hero-highlights">
-        <div class="hero-highlight"><i class="fas fa-ban"></i> Drug-Free Therapy</div>
-        <div class="hero-highlight"><i class="fas fa-user-doctor"></i> Experienced Care</div>
-        <div class="hero-highlight"><i class="fas fa-person-rays"></i> Personalized Plans</div>
-        <div class="hero-highlight"><i class="fas fa-hand-holding-medical"></i> Non-Surgical</div>
+        <div class="hero-highlight"><i class="fas fa-ban"></i> Drug-Free</div>
+        <div class="hero-highlight"><i class="fas fa-graduation-cap"></i> Ph.D &amp; MD</div>
+        <div class="hero-highlight"><i class="fas fa-location-dot"></i> Erode &amp; Tiruppur</div>
+        <div class="hero-highlight"><i class="fas fa-shield-heart"></i> ATAMA Member</div>
       </div>
 
       <div class="hero-buttons">
@@ -126,34 +133,31 @@
           <i class="fas fa-calendar-check"></i> Book Appointment
         </a>
         <a href="https://wa.me/" data-whatsapp class="btn btn-green">
-          <i class="fab fa-whatsapp"></i> WhatsApp Us
-        </a>
-        <a href="#services" class="btn btn-secondary">
-          <i class="fas fa-stethoscope"></i> View Treatments
+          <i class="fab fa-whatsapp"></i> WhatsApp Dr. Nithin
         </a>
       </div>
 
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-value">
-            <span data-count="10" data-suffix="+">10+</span>
+          <div class="hero-stat-value hero-stat-gold">
+            <span data-count="3" data-suffix="+">3+</span>
           </div>
           <div class="hero-stat-label">Years Experience</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value">
-            <span data-count="5000" data-suffix="+">5000+</span>
+          <div class="hero-stat-value hero-stat-gold">
+            <span data-count="5000" data-suffix="+">500+</span>
           </div>
           <div class="hero-stat-label">Patients Healed</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value">
-            <span data-count="7" data-suffix="+">7+</span>
+          <div class="hero-stat-value hero-stat-gold">
+            <span data-count="13" data-suffix="+">13+</span>
           </div>
-          <div class="hero-stat-label">Treatments</div>
+          <div class="hero-stat-label">Specializations</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value">
+          <div class="hero-stat-value hero-stat-gold">
             <span data-count="98" data-suffix="%">98%</span>
           </div>
           <div class="hero-stat-label">Patient Satisfaction</div>
@@ -162,7 +166,7 @@
     </div>
 
     <!-- RIGHT: Doctor Photo -->
-    <div class="hero-image-wrap" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
+    <div class="hero-image-wrap hero-anim-right">
       <div class="hero-photo-frame">
         <div class="hero-photo-ring"></div>
         <div class="hero-photo-ring-2"></div>
@@ -172,14 +176,14 @@
           <img src="https://vzskwrybmhzbshmlosbs.supabase.co/storage/v1/object/public/shaturshacupunctureclinic/dr.nithin.png"
                alt="Dr. Nithin R — Founder, Shatursh Healthcare Centre" />
         </div>
-        <div class="hero-badge-float badge-1" data-aos="zoom-in" data-aos-delay="600">
+        <div class="hero-badge-float badge-1" style="animation:heroBadgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.8s both">
           <i class="fas fa-graduation-cap" style="color:var(--ocean-blue)"></i>
           <div class="hero-badge-float-text">
             <strong>Ph.D · MD Acupuncture</strong>
             <span>Alternative Medicine</span>
           </div>
         </div>
-        <div class="hero-badge-float badge-2" data-aos="zoom-in" data-aos-delay="800">
+        <div class="hero-badge-float badge-2" style="animation:heroBadgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) 1.1s both">
           <i class="fas fa-heart-pulse"></i>
           <div class="hero-badge-float-text">
             <strong>100% Natural</strong>
@@ -336,29 +340,32 @@
       <h2 class="section-title white">Dr. Nithin's Areas of <span style="color:var(--aqua)">Specialization</span></h2>
       <p class="section-desc white" style="margin:0 auto">Trained and certified across 13+ holistic therapy disciplines — giving every patient access to the exact care they need.</p>
     </div>
+    <!-- <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;margin-bottom:20px">
+      <i class="fas fa-hand-pointer"></i> Tap any therapy to learn more
+    </p> -->
     <div class="spec-grid" data-aos="fade-up" data-aos-delay="100">
-      <div class="spec-card"><i class="fas fa-circle-nodes"></i><span>Acupuncture Therapy</span></div>
-      <div class="spec-card"><i class="fas fa-hand-back-fist"></i><span>Acupressure</span></div>
-      <div class="spec-card"><i class="fas fa-hands"></i><span>Varma Therapy</span></div>
-      <div class="spec-card"><i class="fas fa-circle-half-stroke"></i><span>Cupping &amp; Hijama</span></div>
-      <div class="spec-card"><i class="fas fa-bone"></i><span>Chiropractic Therapy</span></div>
-      <div class="spec-card"><i class="fas fa-shoe-prints"></i><span>Reflexology</span></div>
-      <div class="spec-card"><i class="fas fa-hand-sparkles"></i><span>Sujok Therapy</span></div>
-      <div class="spec-card"><i class="fas fa-ear-listen"></i><span>Auricular Therapy</span></div>
-      <div class="spec-card"><i class="fas fa-leaf"></i><span>Flower Medicine</span></div>
-      <div class="spec-card"><i class="fas fa-worm"></i><span>Leech Therapy</span></div>
-      <div class="spec-card"><i class="fas fa-heart-pulse"></i><span>Holistic Pain Management</span></div>
-      <div class="spec-card"><i class="fas fa-person-running"></i><span>Sports Rehabilitation</span></div>
-      <div class="spec-card"><i class="fas fa-shield-heart"></i><span>Wellness &amp; Preventive Care</span></div>
+      <div class="spec-card" data-spec="acupuncture" style="cursor:pointer"><i class="fas fa-circle-nodes"></i><span>Acupuncture Therapy</span></div>
+      <div class="spec-card" data-spec="acupressure" style="cursor:pointer"><i class="fas fa-hand-back-fist"></i><span>Acupressure</span></div>
+      <div class="spec-card" data-spec="varma" style="cursor:pointer"><i class="fas fa-hands"></i><span>Varma Therapy</span></div>
+      <div class="spec-card" data-spec="cupping" style="cursor:pointer"><i class="fas fa-circle-half-stroke"></i><span>Cupping &amp; Hijama</span></div>
+      <div class="spec-card" data-spec="chiro" style="cursor:pointer"><i class="fas fa-bone"></i><span>Chiropractic Therapy</span></div>
+      <div class="spec-card" data-spec="reflexology" style="cursor:pointer"><i class="fas fa-shoe-prints"></i><span>Reflexology</span></div>
+      <div class="spec-card" data-spec="sujok" style="cursor:pointer"><i class="fas fa-hand-sparkles"></i><span>Sujok Therapy</span></div>
+      <div class="spec-card" data-spec="auricular" style="cursor:pointer"><i class="fas fa-ear-listen"></i><span>Auricular Therapy</span></div>
+      <div class="spec-card" data-spec="flower" style="cursor:pointer"><i class="fas fa-leaf"></i><span>Flower Medicine</span></div>
+      <div class="spec-card" data-spec="leech" style="cursor:pointer"><i class="fas fa-worm"></i><span>Leech Therapy</span></div>
+      <div class="spec-card" data-spec="pain" style="cursor:pointer"><i class="fas fa-heart-pulse"></i><span>Holistic Pain Management</span></div>
+      <div class="spec-card" data-spec="sports" style="cursor:pointer"><i class="fas fa-person-running"></i><span>Sports Rehabilitation</span></div>
+      <div class="spec-card" data-spec="wellness" style="cursor:pointer"><i class="fas fa-shield-heart"></i><span>Wellness &amp; Preventive Care</span></div>
     </div>
     <!-- Training chips -->
     <div class="spec-training" data-aos="fade-up" data-aos-delay="200">
       <p class="spec-training-label"><i class="fas fa-chalkboard-user"></i> Also a Professional Trainer in:</p>
       <div class="spec-training-tags">
-        <span>Sports Taping Techniques</span>
-        <span>Chiropractic Therapy</span>
-        <span>Varma Therapy</span>
-        <span>Acupuncture Training</span>
+        <span data-spec="sports_tape" style="cursor:pointer" title="Click to learn more"><i class="fas fa-bandage"></i> Sports Taping Techniques</span>
+        <span data-spec="chiro_train" style="cursor:pointer" title="Click to learn more"><i class="fas fa-bone"></i> Chiropractic Therapy</span>
+        <span data-spec="varma_train" style="cursor:pointer" title="Click to learn more"><i class="fas fa-hands"></i> Varma Therapy</span>
+        <span data-spec="acu_train"   style="cursor:pointer" title="Click to learn more"><i class="fas fa-circle-nodes"></i> Acupuncture Training</span>
       </div>
     </div>
   </div>
@@ -525,9 +532,9 @@
 <section id="symptom-finder" class="symptom-section">
   <div class="symptom-container">
     <div class="symptom-header" data-aos="fade-up">
-      <div class="section-label"><i class="fas fa-magnifying-glass-plus"></i> Find Your Treatment</div>
-      <h2 class="section-title">What Are You <span>Experiencing?</span></h2>
-      <p class="section-desc" style="margin:0 auto">Select your condition below and we'll recommend the most effective natural therapies for you.</p>
+      <div class="section-label white"><i class="fas fa-magnifying-glass-plus"></i> Find Your Treatment</div>
+      <h2 class="section-title white">What Are You <span style="color:var(--aqua)">Experiencing?</span></h2>
+      <p class="section-desc white" style="margin:0 auto">Select your condition and we'll recommend the most effective natural therapies for you.</p>
     </div>
 
     <div class="symptom-grid" data-aos="fade-up" data-aos-delay="100">
@@ -715,7 +722,7 @@
     </div>
 
     <!-- Panels -->
-    <div id="tab-acupuncture" class="tab-panel active" data-aos="fade-up">
+    <div id="tab-acupuncture" class="tab-panel active">
       <div class="treatment-panel-grid">
         <div class="treatment-info">
           <h3 class="treatment-info-title">Acupuncture Therapy</h3>
@@ -1396,13 +1403,13 @@
         <div class="contact-info-icon"><i class="fas fa-location-dot"></i></div>
         <div class="contact-info-text">
           <strong>Visit Us</strong>
-          <span data-config="clinic.address">No. 123, Healthcare Avenue, Chennai</span>
+          <span data-config="clinic.address">Tiruppur & Erode</span>
         </div>
       </div>
       <div class="contact-map">
         <iframe
-          src="https://www.openstreetmap.org/export/embed.html?bbox=80.2707%2C13.0827%2C80.2907%2C13.0927&layer=mapnik"
-          allowfullscreen loading="lazy" title="Clinic Location">
+          data-src="https://www.openstreetmap.org/export/embed.html?bbox=77.6807%2C11.3327%2C77.7407%2C11.3727&layer=mapnik"
+          title="Clinic Location — Erode" style="border:0;width:100%;height:100%">
         </iframe>
       </div>
       <div class="contact-social">
@@ -1487,7 +1494,7 @@
         <a href="#" data-phone><i class="fas fa-phone fa-fw"></i> <span class="config-phone-text">+91 98765 43210</span></a>
         <a href="https://wa.me/" data-whatsapp><i class="fab fa-whatsapp fa-fw"></i> WhatsApp Us</a>
         <a href="#" data-email><i class="fas fa-envelope fa-fw"></i> Email Us</a>
-        <a href="#"><i class="fas fa-location-dot fa-fw"></i> <span data-config="clinic.address">Chennai, Tamil Nadu</span></a>
+        <a href="#"><i class="fas fa-location-dot fa-fw"></i> <span data-config="clinic.address">Tiruppur & Erode, Tamil Nadu</span></a>
       </div>
       <div style="margin-top:20px">
         <a href="admin.html" style="font-size:0.75rem;color:rgba(255,255,255,0.25)">Admin Panel</a>
@@ -1497,7 +1504,7 @@
 
   <div class="footer-bottom">
     <p class="footer-bottom-text">
-      © 2025 Shatursh Healthcare Centre. All rights reserved.
+      © 2026 Shatursh Healthcare Centre. All rights reserved.
     </p>
     <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
       <div class="footer-bottom-links">
@@ -1558,6 +1565,20 @@
   </div>
 </div>
 
+<!-- ======================== SPECIALIZATION MODAL ======================== -->
+<div id="spec-modal" class="spec-modal-overlay" role="dialog" aria-modal="true">
+  <div class="spec-modal-card">
+    <button class="spec-modal-close" aria-label="Close"><i class="fas fa-times"></i></button>
+    <div class="spec-modal-icon"><i id="spec-modal-icon" class="fas fa-circle-nodes"></i></div>
+    <span class="spec-modal-badge">Dr. Nithin R — Specialization</span>
+    <h3 class="spec-modal-title" id="spec-modal-title">Acupuncture Therapy</h3>
+    <ul class="spec-modal-points" id="spec-modal-points"></ul>
+    <a href="#contact" class="spec-modal-btn" id="spec-modal-btn">
+      <i class="fas fa-calendar-check"></i> Book This Treatment
+    </a>
+  </div>
+</div>
+
 <!-- Confetti Canvas -->
 <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9998;display:block"></canvas>
 
@@ -1598,8 +1619,7 @@
 <!-- Particles.js -->
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
-<!-- AOS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.min.js"></script>
+<!-- AOS replaced by native scroll-reveal -->
 
 <!-- Swiper -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

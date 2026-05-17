@@ -34,12 +34,17 @@ function initPreloader() {
     }
   }
 
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      preloader.classList.add("hide");
-      setTimeout(() => preloader.remove(), 700);
-    }, 2400);
-  });
+  function hidePreloader() {
+    if (preloader.classList.contains("hide")) return;
+    preloader.classList.add("hide");
+    setTimeout(() => { if (preloader.parentNode) preloader.remove(); }, 800);
+  }
+
+  // Hide after 1.5s — fast path, doesn't wait for images or CDN
+  setTimeout(hidePreloader, 1500);
+
+  // Also catch window.load if it fires earlier
+  window.addEventListener("load", () => setTimeout(hidePreloader, 300));
 }
 
 /* ---------- CURSOR GLOW ---------- */
@@ -157,11 +162,44 @@ function initParticles() {
   });
 }
 
-/* ---------- AOS ---------- */
+/* ---------- SCROLL REVEAL (native, no library) ---------- */
 function initAOS() {
-  if (typeof AOS !== "undefined") {
-    AOS.init({ duration: 700, once: true, offset: 80, easing: "ease-out-cubic" });
+  const els = [...document.querySelectorAll("[data-aos]")];
+  if (!els.length) return;
+
+  // Step 1: Only hide elements that are BELOW the visible viewport
+  // Elements already in view (like near-top sections) stay visible
+  els.forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.top > window.innerHeight + 50) {
+      el.classList.add("sr-hidden");
+    }
+  });
+
+  // Step 2: When element scrolls into view, remove sr-hidden → CSS transition plays
+  if ("IntersectionObserver" in window) {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const delay = parseInt(el.dataset.aosDelay || 0);
+          setTimeout(() => el.classList.remove("sr-hidden"), delay);
+          obs.unobserve(el);
+        });
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -20px 0px" }
+    );
+    els.filter((el) => el.classList.contains("sr-hidden")).forEach((el) => obs.observe(el));
+  } else {
+    // No IntersectionObserver → show everything
+    els.forEach((el) => el.classList.remove("sr-hidden"));
   }
+
+  // Absolute failsafe: after 4s everything is visible regardless
+  setTimeout(() => {
+    document.querySelectorAll(".sr-hidden").forEach((el) => el.classList.remove("sr-hidden"));
+  }, 4000);
 }
 
 /* ---------- SWIPER (REVIEWS) ---------- */
@@ -180,19 +218,57 @@ function initSwiper() {
   });
 }
 
-/* ---------- TREATMENT TABS ---------- */
+/* ---------- TREATMENT TABS (direct style, no CSS class dependency) ---------- */
 function initTabs() {
-  const tabBtns = document.querySelectorAll(".tab-btn");
+  const btns   = document.querySelectorAll(".tab-btn");
   const panels = document.querySelectorAll(".tab-panel");
 
-  tabBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const target = btn.dataset.tab;
-      tabBtns.forEach((b) => b.classList.remove("active"));
-      panels.forEach((p) => p.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById(`tab-${target}`)?.classList.add("active");
+  if (!btns.length || !panels.length) return;
+
+  // Force every element inside a panel to be fully visible (inline style wins)
+  function showPanel(panel) {
+    panel.style.display = "block";
+    panel.classList.add("active");
+    // Remove any scroll-reveal hiding
+    panel.classList.remove("sr-hidden");
+    panel.style.opacity  = "1";
+    panel.style.transform = "none";
+    panel.style.visibility = "visible";
+    // Force all descendants visible — inline !important-equivalent via setProperty
+    panel.querySelectorAll("*").forEach((el) => {
+      el.style.setProperty("opacity",    "1",       "important");
+      el.style.setProperty("visibility", "visible", "important");
+      el.style.setProperty("transform",  "none",    "important");
+      el.classList.remove("sr-hidden");
     });
+  }
+
+  function hidePanel(panel) {
+    panel.style.display = "none";
+    panel.classList.remove("active");
+  }
+
+  // Initialise — show first active panel, hide rest
+  panels.forEach((p) => {
+    if (p.classList.contains("active")) showPanel(p);
+    else hidePanel(p);
+  });
+
+  // Tab button clicks
+  btns.forEach((btn) => {
+    btn.onclick = function () {
+      const target = this.dataset.tab;
+      if (!target) return;
+
+      // Update button states
+      btns.forEach((b) => b.classList.remove("active"));
+      this.classList.add("active");
+
+      // Hide all panels, show target
+      panels.forEach(hidePanel);
+      const panel = document.getElementById("tab-" + target);
+      if (panel) showPanel(panel);
+    };
   });
 }
 
@@ -458,6 +534,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initMarquee();
   populateConfig();
   loadReviews().then(initSwiper);
+  initLazyIframes();
+  initSpecModal();
   // Next-level features
   initScrollProgress();
   initDarkMode();
@@ -475,6 +553,25 @@ document.addEventListener("DOMContentLoaded", () => {
 /* =====================================================
    NEXT-LEVEL FEATURES
    ===================================================== */
+
+/* ---------- LAZY IFRAME LOADER ---------- */
+function initLazyIframes() {
+  const iframes = document.querySelectorAll("iframe[data-src]");
+  if (!iframes.length) return;
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.src = el.dataset.src;
+          obs.unobserve(el);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+  iframes.forEach((el) => obs.observe(el));
+}
 
 /* ---------- SCROLL PROGRESS BAR ---------- */
 function initScrollProgress() {
@@ -499,24 +596,43 @@ function initDarkMode() {
   });
 }
 
-/* ---------- TYPEWRITER ---------- */
+/* ---------- TYPEWRITER (word-swap, no complex timing) ---------- */
 function initTypewriter() {
   const el = document.querySelector(".hero-typewriter");
-  if (!el) return;
-  const words = ["Natural Healing", "Pain Relief", "Holistic Wellness", "Drug-Free Therapy", "True Recovery", "Lasting Health"];
-  let wi = 0, ci = 0, deleting = false;
-  function type() {
-    const word = words[wi];
-    el.textContent = deleting ? word.slice(0, ci--) : word.slice(0, ci++);
-    if (!deleting && ci > word.length) {
-      deleting = true; setTimeout(type, 1800); return;
-    }
-    if (deleting && ci < 0) {
-      deleting = false; wi = (wi + 1) % words.length; ci = 0;
-    }
-    setTimeout(type, deleting ? 55 : 105);
+  if (!el) { setTimeout(initTypewriter, 200); return; }
+
+  const words = [
+    "Acupuncture", "Varma Therapy", "Cupping & Hijama",
+    "Chiropractic Care", "Reflexology", "Pain Management",
+    "Sports Rehab", "Holistic Healing", "Auricular Therapy",
+    "Sujok Therapy"
+  ];
+  let wi = 0;
+
+  // Apply styles directly — no CSS inheritance uncertainty
+  el.style.cssText = [
+    "color:#ffd700", "font-weight:800", "display:inline-block",
+    "min-width:200px", "opacity:1",
+    "transition:opacity 0.35s ease, transform 0.35s ease"
+  ].join(";");
+
+  // Show first word instantly (no delay)
+  el.textContent = words[0];
+
+  function swap() {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(-8px)";
+    setTimeout(() => {
+      wi = (wi + 1) % words.length;
+      el.textContent = words[wi];
+      el.style.transform = "translateY(8px)";
+      void el.offsetHeight; // force browser to notice the transform change
+      el.style.opacity = "1";
+      el.style.transform = "translateY(0)";
+    }, 360);
   }
-  setTimeout(type, 800);
+
+  setInterval(swap, 2600);
 }
 
 /* ---------- WATER RIPPLE ON CLICK ---------- */
@@ -567,6 +683,229 @@ function initMagneticButtons() {
       btn.style.transform = "";
     });
   });
+}
+
+/* ---------- SPECIALIZATION POPUP ---------- */
+const SPEC_DATA = {
+  acupuncture: {
+    icon: "fa-circle-nodes",
+    title: "Acupuncture Therapy",
+    points: [
+      "Ultra-fine sterile needles stimulate precise energy points on the body to activate natural healing",
+      "Effective for chronic pain, migraines, sciatica, frozen shoulder, arthritis and stress relief",
+      "Balances the body's vital energy (Qi) flow for lasting pain-free wellness — zero side effects",
+    ],
+  },
+  acupressure: {
+    icon: "fa-hand-back-fist",
+    title: "Acupressure",
+    points: [
+      "Firm finger pressure on the same meridian points as acupuncture — completely needle-free",
+      "Relieves headaches, neck tension, fatigue, nausea and digestive discomfort gently",
+      "Safe for all ages including children and elderly — a perfect first step into natural healing",
+    ],
+  },
+  varma: {
+    icon: "fa-hands",
+    title: "Varma Therapy",
+    points: [
+      "Ancient South Indian healing system applying pressure to 108 vital nerve junctions (Varma points)",
+      "Powerfully restores nerve function, treats paralysis, musculoskeletal disorders and joint pain",
+      "Balances the body's pranic energy — one of the most potent traditional healing methods available",
+    ],
+  },
+  cupping: {
+    icon: "fa-circle-half-stroke",
+    title: "Cupping & Hijama Therapy",
+    points: [
+      "Specially designed cups create controlled suction that lifts tissue and draws out toxins naturally",
+      "Boosts blood circulation, deeply relaxes muscles and accelerates sports injury recovery",
+      "Hijama (wet cupping) detoxifies the blood, reduces inflammation and relieves chronic pain",
+    ],
+  },
+  chiro: {
+    icon: "fa-bone",
+    title: "Chiropractic Therapy",
+    points: [
+      "Precise hands-on adjustments correct misalignments in the spine, neck and joints",
+      "Instantly relieves lower back pain, herniated discs, sciatica and nerve compression",
+      "Improves posture, restores full mobility and prevents long-term spinal degeneration",
+    ],
+  },
+  reflexology: {
+    icon: "fa-shoe-prints",
+    title: "Reflexology",
+    points: [
+      "Specific pressure on reflex zones of the feet and hands that mirror every organ in the body",
+      "Promotes deep relaxation, reduces stress hormones and improves lymphatic circulation",
+      "Supports kidney, liver, digestive and hormonal health through non-invasive foot therapy",
+    ],
+  },
+  sujok: {
+    icon: "fa-hand-sparkles",
+    title: "Sujok Therapy",
+    points: [
+      "Hands and feet are micro-maps of the entire human body — treatment applied at these mini points",
+      "Tiny stimulators, seeds or mini-needles on hand/foot reflex points give rapid pain relief",
+      "Highly effective for joint pain, organ disorders, headaches and emotional imbalances",
+    ],
+  },
+  auricular: {
+    icon: "fa-ear-listen",
+    title: "Auricular Therapy",
+    points: [
+      "The outer ear contains a complete map of the body — over 200 identified acupuncture points",
+      "Micro-needles or ear seeds stimulate points linked to organs, nerves and brain areas",
+      "Used effectively for pain management, stress, addiction recovery, weight and sleep disorders",
+    ],
+  },
+  flower: {
+    icon: "fa-leaf",
+    title: "Flower Medicine",
+    points: [
+      "Dilute flower essences work on the emotional and energetic level to restore inner balance",
+      "Addresses anxiety, grief, fear, low confidence, anger and emotional trauma gently",
+      "Completely natural, non-toxic and safe for all ages — no known contraindications",
+    ],
+  },
+  leech: {
+    icon: "fa-worm",
+    title: "Leech Therapy (Hirudotherapy)",
+    points: [
+      "Medicinal leeches secrete hirudin — a powerful natural anticoagulant and anti-inflammatory",
+      "Improves micro-circulation, relieves varicose veins, joint inflammation and diabetic wounds",
+      "WHO-recognised therapy used successfully for pain, skin conditions and post-surgical healing",
+    ],
+  },
+  pain: {
+    icon: "fa-heart-pulse",
+    title: "Holistic Pain Management",
+    points: [
+      "Multi-therapy protocol combining acupuncture, cupping and Varma to target the root of pain",
+      "Addresses chronic conditions like fibromyalgia, neuropathy, arthritis and post-surgical pain",
+      "Long-lasting relief without drugs, injections or surgery — completely personalised per patient",
+    ],
+  },
+  sports: {
+    icon: "fa-person-running",
+    title: "Sports Rehabilitation",
+    points: [
+      "Structured recovery programs for sprains, muscle tears, tendon injuries and sports fractures",
+      "Combines acupuncture, cupping and manual therapy to accelerate tissue repair and mobility",
+      "Restores peak athletic performance and builds injury prevention strategies for the future",
+    ],
+  },
+  wellness: {
+    icon: "fa-shield-heart",
+    title: "Wellness & Preventive Care",
+    points: [
+      "Proactive health maintenance — detox, immune system boost and energy restoration programs",
+      "Personalised lifestyle, diet and therapy plans to keep you healthy before illness strikes",
+      "Regular sessions improve sleep quality, mental clarity, digestion and overall vitality",
+    ],
+  },
+  /* ─── Trainer programmes ─── */
+  sports_tape: {
+    icon: "fa-bandage",
+    title: "Sports Taping Techniques",
+    points: [
+      "Kinesio and athletic taping methods to support injured muscles, joints and tendons during recovery",
+      "Teaches correct tape application to stabilise structures, reduce pain and prevent re-injury",
+      "Used alongside acupuncture and manual therapy in sports rehabilitation programmes",
+    ],
+  },
+  chiro_train: {
+    icon: "fa-bone",
+    title: "Chiropractic Therapy Training",
+    points: [
+      "Hands-on teaching of safe spinal adjustment, mobilisation and soft-tissue techniques",
+      "Covers patient assessment, contraindications, red flags and evidence-based treatment protocols",
+      "Practical training programme for practitioners seeking to add chiropractic skills to their practice",
+    ],
+  },
+  varma_train: {
+    icon: "fa-hands",
+    title: "Varma Therapy Training",
+    points: [
+      "Comprehensive transfer of knowledge of all 108 vital Varma points and their therapeutic applications",
+      "Students learn safe stimulation methods for pain relief, nerve conditions and musculoskeletal disorders",
+      "Covers both clinical therapy use and traditional emergency revival (Thodu Varmam) techniques",
+    ],
+  },
+  acu_train: {
+    icon: "fa-circle-nodes",
+    title: "Acupuncture Training",
+    points: [
+      "Full foundation programme covering meridian theory, point selection and needle placement",
+      "Students learn sterile technique, patient assessment, treatment planning and safety protocols",
+      "Prepares students for professional practice and formal acupuncture certification",
+    ],
+  },
+};
+
+function initSpecModal() {
+  const overlay = document.getElementById("spec-modal");
+  if (!overlay) return;
+
+  const modalIcon  = document.getElementById("spec-modal-icon");
+  const modalTitle = document.getElementById("spec-modal-title");
+  const modalPts   = document.getElementById("spec-modal-points");
+  const modalBtn   = document.getElementById("spec-modal-btn");
+  const closeBtn   = overlay.querySelector(".spec-modal-close");
+
+  function openModal(key) {
+    const d = SPEC_DATA[key];
+    if (!d) return;
+
+    modalIcon.className = `fas ${d.icon}`;
+    modalTitle.textContent = d.title;
+    modalPts.innerHTML = d.points.map((p) => `<li>${p}</li>`).join("");
+
+    // Badge — trainer programmes get a different colour
+    const badge = overlay.querySelector(".spec-modal-badge");
+    const isTrainer = ["sports_tape","chiro_train","varma_train","acu_train"].includes(key);
+    if (badge) {
+      badge.textContent = isTrainer ? "Dr. Nithin R — Trainer Programme" : "Dr. Nithin R — Specialization";
+      badge.style.background = isTrainer ? "#fef3c7" : "";
+      badge.style.color      = isTrainer ? "#92400e" : "";
+    }
+
+    // CTA label changes for trainer programmes
+    if (modalBtn) {
+      modalBtn.innerHTML = isTrainer
+        ? `<i class="fab fa-whatsapp"></i> Enquire About Training`
+        : `<i class="fas fa-calendar-check"></i> Book This Treatment`;
+    }
+
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  // Open on spec-card click
+  document.querySelectorAll("[data-spec]").forEach((card) => {
+    card.addEventListener("click", () => openModal(card.dataset.spec));
+  });
+
+  // Close on X button
+  closeBtn?.addEventListener("click", closeModal);
+
+  // Close on overlay background click
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  // Close modal when Contact link inside modal is clicked
+  modalBtn?.addEventListener("click", closeModal);
 }
 
 /* ---------- SYMPTOM FINDER ---------- */
