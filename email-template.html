@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--
+  EmailJS template: "New Appointment Request" (sent to the clinic)
+  Paste this whole file into EmailJS > Email Templates > your template > Edit Content > Code editor.
+  In the template Settings tab set:  To = {{to_email}}   |   Reply-To = {{reply_to}}   |   Subject = New appointment: {{name}} - {{service}}
+  Variables sent by the website: name, phone, phone_digits, email, service, date, message,
+  submitted_at, to_email, cc_email, reply_to, clinic_name.
+-->
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { margin: 0; padding: 0; background: #f0f8ff; font-family: 'Segoe UI', Arial, sans-serif; }
+    .wrapper { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(2,62,138,0.12); }
+    .header { background: #0a6fa8; background: linear-gradient(135deg, #04293a, #0a6fa8, #13a3b8); padding: 30px 36px; text-align: center; }
+    .logo-tile { display: inline-block; background: #ffffff; border-radius: 18px; padding: 8px; margin-bottom: 12px; }
+    .logo-tile img { display: block; width: 72px; height: 72px; border: 0; }
+    .header-title { color: #ffffff; font-size: 22px; font-weight: 700; margin: 0; letter-spacing: 0.5px; }
+    .header-sub { color: rgba(255,255,255,0.85); font-size: 13px; margin: 4px 0 0; }
+    .alert-bar { background: #e0a63a; color: #04293a; text-align: center; padding: 10px 20px; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+    .body { padding: 32px 36px; }
+    .greeting { font-size: 16px; color: #0c2230; margin: 0 0 20px; line-height: 1.6; }
+    .greeting strong { color: #0a6fa8; }
+    .section-title { font-size: 11px; font-weight: 700; color: #13a3b8; letter-spacing: 2px; text-transform: uppercase; margin: 28px 0 12px; }
+    .detail-table { width: 100%; border-collapse: collapse; }
+    .detail-table tr { border-bottom: 1px solid #e8f4f8; }
+    .detail-table td { padding: 12px 0; font-size: 14px; vertical-align: top; }
+    .detail-table td:first-child { color: #567184; width: 38%; font-weight: 600; }
+    .detail-table td:last-child { color: #0c2230; font-weight: 500; }
+    .highlight-row td { color: #04293a !important; font-weight: 700 !important; }
+    .message-box { background: #f0f8ff; border-left: 4px solid #13a3b8; border-radius: 0 8px 8px 0; padding: 14px 16px; font-size: 14px; color: #2b4a5e; line-height: 1.7; margin-top: 8px; white-space: pre-line; }
+    .action-wrap { text-align: center; margin: 28px 0; }
+    .btn-call { display: inline-block; background: #0a6fa8; color: #ffffff !important; text-decoration: none; padding: 13px 28px; border-radius: 50px; font-size: 15px; font-weight: 700; margin: 6px 8px; }
+    .btn-wa { display: inline-block; background: #25d366; color: #ffffff !important; text-decoration: none; padding: 13px 28px; border-radius: 50px; font-size: 15px; font-weight: 700; margin: 6px 8px; }
+    .note { background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #795548; margin-top: 24px; line-height: 1.6; }
+    .footer { background: #04202e; padding: 24px 36px; text-align: center; }
+    .footer p { color: rgba(255,255,255,0.6); font-size: 12px; margin: 0; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Header with logo -->
+    <div class="header">
+      <div class="logo-tile">
+        <img src="https://vzskwrybmhzbshmlosbs.supabase.co/storage/v1/object/public/shaturshacupunctureclinic/Shaturshlogo.png" width="72" height="72" alt="Shatursh Healthcare Centre" />
+      </div>
+      <p class="header-title">Shatursh Healthcare Centre</p>
+      <p class="header-sub">New Appointment Request Received</p>
+    </div>
+
+    <div class="alert-bar">ACTION REQUIRED &mdash; New Patient Inquiry</div>
+
+    <div class="body">
+
+      <p class="greeting">
+        Dear <strong>Dr. Nithin R</strong>,<br />
+        A new appointment request has been submitted through the website. Please review the details below and follow up with the patient at your earliest convenience.
+      </p>
+
+      <div class="section-title">Patient Information</div>
+      <table class="detail-table">
+        <tr class="highlight-row">
+          <td>Patient Name</td>
+          <td>{{name}}</td>
+        </tr>
+        <tr>
+          <td>Phone Number</td>
+          <td>{{phone}}</td>
+        </tr>
+        <tr>
+          <td>Email Address</td>
+          <td>{{email}}</td>
+        </tr>
+      </table>
+
+      <div class="section-title">Appointment Details</div>
+      <table class="detail-table">
+        <tr class="highlight-row">
+          <td>Treatment Required</td>
+          <td>{{service}}</td>
+        </tr>
+        <tr>
+          <td>Preferred Date</td>
+          <td>{{date}}</td>
+        </tr>
+        <tr>
+          <td>Submitted On</td>
+          <td>{{submitted_at}}</td>
+        </tr>
+      </table>
+
+      <div class="section-title">Patient Message / Branch &amp; Time Preference</div>
+      <div class="message-box">{{message}}</div>
+
+      <div class="action-wrap">
+        <a href="tel:+{{phone_digits}}" class="btn-call">Call Patient</a>
+        <a href="https://wa.me/{{phone_digits}}" class="btn-wa">WhatsApp Patient</a>
+      </div>
+
+      <div class="note">
+        <strong>Reminder:</strong> Please respond to this patient within 24 hours to confirm their appointment. A quick follow-up improves patient satisfaction significantly.
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <p>
+        Shatursh Healthcare Centre &mdash; Erode &amp; Tiruppur<br />
+        This is an automated email from your website's appointment form.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

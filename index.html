@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Shatursh Healthcare Centre — Natural healing through Acupuncture, Varma Therapy, Cupping, Chiropractic care and more. Your Journey to Natural Healing Starts Here." />
+  <meta name="theme-color" content="#04293a" />
+  <meta property="og:title" content="Shatursh Healthcare Centre | Natural Healing & Holistic Care" />
+  <meta property="og:description" content="Acupuncture, Varma, Cupping, Chiropractic care and more with Dr. Nithin R — Erode & Tiruppur." />
+  <meta property="og:type" content="website" />
   <title>Shatursh Healthcare Centre | Natural Healing & Holistic Care</title>
 
   <!-- Preconnect -->
@@ -25,7 +29,7 @@
   <link rel="stylesheet" href="css/style.css" />
 
   <!-- Favicon placeholder -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>" />
+  <link rel="icon" href="https://vzskwrybmhzbshmlosbs.supabase.co/storage/v1/object/public/shaturshacupunctureclinic/Shaturshlogo.png" />
 </head>
 <body>
 
@@ -83,11 +87,11 @@
 
     <div class="nav-cta">
       <!-- Dark Mode Toggle -->
-      <button class="dark-mode-toggle" title="Toggle dark mode" aria-label="Toggle dark mode"></button>
+      <button class="dark-mode-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode"></button>
       <a href="#contact" class="btn-nav-book">Book Appointment</a>
-      <div class="nav-hamburger">
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" type="button">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
 </nav>
@@ -96,6 +100,13 @@
 <section id="home" class="hero">
   <div id="particles-js"></div>
   <div class="hero-water-overlay"></div>
+  <!-- Floating decorative healing icons -->
+  <i class="fas fa-leaf       hero-float-icon" style="left:8%;  animation-duration:14s; animation-delay:0s;  font-size:1.2rem"></i>
+  <i class="fas fa-spa        hero-float-icon" style="left:20%; animation-duration:18s; animation-delay:3s;  font-size:1.6rem"></i>
+  <i class="fas fa-circle-nodes hero-float-icon" style="left:75%; animation-duration:12s; animation-delay:1s;  font-size:1rem"></i>
+  <i class="fas fa-heart-pulse hero-float-icon" style="left:88%; animation-duration:16s; animation-delay:5s;  font-size:1.4rem"></i>
+  <i class="fas fa-seedling   hero-float-icon" style="left:45%; animation-duration:20s; animation-delay:7s;  font-size:1.1rem"></i>
+  <i class="fas fa-hand-holding-medical hero-float-icon" style="left:60%;animation-duration:15s;animation-delay:2s;font-size:1.3rem"></i>
 
   <div class="hero-container">
     <!-- LEFT: Content -->
@@ -111,11 +122,6 @@
         Starts Here
       </h1>
 
-      <!-- Standalone typewriter block
-      <div class="hero-tw-block">
-        <span class="hero-tw-label">We specialize in</span>
-        <span class="hero-tw-word"><span class="hero-typewriter"></span><span class="typewriter-cursor"></span></span>
-      </div> -->
 
       <p class="hero-subtitle">
         Dr. Nithin R combines ancient healing wisdom with modern therapeutic methods — drug-free, non-surgical, and personalized for lasting relief.
@@ -132,7 +138,7 @@
         <a href="#contact" class="btn btn-primary">
           <i class="fas fa-calendar-check"></i> Book Appointment
         </a>
-        <a href="https://wa.me/" data-whatsapp class="btn btn-green">
+        <a href="https://wa.me/" data-whatsapp class="btn btn-green" target="_blank" rel="noopener">
           <i class="fab fa-whatsapp"></i> WhatsApp Dr. Nithin
         </a>
       </div>
@@ -146,7 +152,7 @@
         </div>
         <div class="hero-stat">
           <div class="hero-stat-value hero-stat-gold">
-            <span data-count="5000" data-suffix="+">500+</span>
+            <span data-count="500" data-suffix="+">500+</span>
           </div>
           <div class="hero-stat-label">Patients Healed</div>
         </div>
@@ -213,12 +219,6 @@
 
 <!-- ======================== ABOUT ======================== -->
 <section id="about" class="about-section">
-  <!-- Wave Top -->
-  <div class="wave-top" style="margin-bottom:-2px">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80">
-      <path fill="#f0f8ff" fill-opacity="1" d="M0,40L80,45C160,50,320,60,480,58C640,56,800,42,960,38C1120,34,1280,40,1360,43L1440,46L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
-    </svg>
-  </div>
 
   <div class="about-container">
     <!-- Left: Doctor Photo -->
@@ -324,7 +324,7 @@
         <a href="#contact" class="btn btn-primary" style="width:fit-content">
           <i class="fas fa-calendar-check"></i> Book a Consultation
         </a>
-        <a href="https://wa.me/" data-whatsapp class="btn btn-green" style="width:fit-content">
+        <a href="https://wa.me/" data-whatsapp class="btn btn-green" style="width:fit-content" target="_blank" rel="noopener">
           <i class="fab fa-whatsapp"></i> Chat with Dr. Nithin
         </a>
       </div>
@@ -337,7 +337,7 @@
   <div class="spec-container">
     <div class="spec-header" data-aos="fade-up">
       <div class="section-label white"><i class="fas fa-list-ul"></i> Expertise</div>
-      <h2 class="section-title white">Dr. Nithin's Areas of <span style="color:var(--aqua)">Specialization</span></h2>
+      <h2 class="section-title white">Dr. Nithin's Areas of <span>Specialization</span></h2>
       <p class="section-desc white" style="margin:0 auto">Trained and certified across 13+ holistic therapy disciplines — giving every patient access to the exact care they need.</p>
     </div>
     <!-- <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;margin-bottom:20px">
@@ -375,15 +375,15 @@
 <section id="process" class="process-section">
   <div class="process-container">
     <div class="process-header" data-aos="fade-up">
-      <div class="section-label white"><i class="fas fa-route"></i> Our Process</div>
-      <h2 class="section-title white">How It <span style="color:var(--aqua)">Works</span></h2>
-      <p class="section-desc white" style="margin:0 auto">Three simple steps to begin your natural healing journey with Shatursh Healthcare Centre.</p>
+      <div class="section-label"><i class="fas fa-route"></i> Our Process</div>
+      <h2 class="section-title">How It <span>Works</span></h2>
+      <p class="section-desc" style="margin:0 auto">Three simple steps to begin your natural healing journey with Shatursh Healthcare Centre.</p>
     </div>
 
     <div class="process-steps">
       <div class="process-step" data-aos="fade-up" data-aos-delay="100">
         <div class="process-step-num">
-          <i class="fas fa-comments-medical"></i>
+          <i class="fas fa-comments"></i>
           <span>STEP 01</span>
         </div>
         <h3 class="process-step-title">Consult</h3>
@@ -411,12 +411,6 @@
 
 <!-- ======================== SERVICES ======================== -->
 <section id="services" class="services-section">
-  <!-- Wave -->
-  <div class="wave-top">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80">
-      <path fill="#ffffff" fill-opacity="1" d="M0,32L60,37C120,43,240,53,360,53C480,53,600,43,720,37C840,32,960,32,1080,37C1200,43,1320,53,1380,58L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
-    </svg>
-  </div>
 
   <div class="services-container">
     <div class="services-header" data-aos="fade-up">
@@ -533,7 +527,7 @@
   <div class="symptom-container">
     <div class="symptom-header" data-aos="fade-up">
       <div class="section-label white"><i class="fas fa-magnifying-glass-plus"></i> Find Your Treatment</div>
-      <h2 class="section-title white">What Are You <span style="color:var(--aqua)">Experiencing?</span></h2>
+      <h2 class="section-title white">What Are You <span>Experiencing?</span></h2>
       <p class="section-desc white" style="margin:0 auto">Select your condition and we'll recommend the most effective natural therapies for you.</p>
     </div>
 
@@ -597,9 +591,9 @@
 <section id="why-us" class="whyus-section">
   <div class="whyus-container">
     <div class="whyus-header" data-aos="fade-up">
-      <div class="section-label white"><i class="fas fa-star"></i> Why Choose Us</div>
-      <h2 class="section-title white">Why <span style="color:var(--aqua)">Shatursh Healthcare</span>?</h2>
-      <p class="section-desc white" style="margin:0 auto">Patients choose us because we deliver real results through evidence-based, natural healing with genuine care.</p>
+      <div class="section-label"><i class="fas fa-star"></i> Why Choose Us</div>
+      <h2 class="section-title">Why <span>Shatursh Healthcare</span>?</h2>
+      <p class="section-desc" style="margin:0 auto">Patients choose us because we deliver real results through evidence-based, natural healing with genuine care.</p>
     </div>
 
     <div class="whyus-grid">
@@ -611,7 +605,7 @@
       <div class="why-card" data-aos="fade-up" data-aos-delay="200">
         <div class="why-icon"><i class="fas fa-user-doctor"></i></div>
         <h3 class="why-title">Expert Practitioners</h3>
-        <p class="why-desc">Our specialists hold advanced certifications in multiple holistic disciplines with 10+ years of clinical experience.</p>
+        <p class="why-desc">Dr. Nithin holds advanced qualifications across 13+ holistic disciplines, from acupuncture and Varma to chiropractic care.</p>
       </div>
       <div class="why-card" data-aos="fade-up" data-aos-delay="300">
         <div class="why-icon"><i class="fas fa-clipboard-list"></i></div>
@@ -629,7 +623,7 @@
         <p class="why-desc">Non-invasive, gentle therapies suitable for all ages — from children to the elderly. Zero surgical risk.</p>
       </div>
       <div class="why-card" data-aos="fade-up" data-aos-delay="300">
-        <div class="why-icon"><i class="fas fa-handshake-heart"></i></div>
+        <div class="why-icon"><i class="fas fa-hand-holding-heart"></i></div>
         <h3 class="why-title">Compassionate Care</h3>
         <p class="why-desc">We treat every patient like family, listening deeply and caring genuinely about your recovery journey.</p>
       </div>
@@ -697,12 +691,6 @@
 
 <!-- ======================== TREATMENTS (TABBED) ======================== -->
 <section id="treatments" class="treatments-section">
-  <!-- Wave top -->
-  <div class="wave-top">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80">
-      <path fill="#f0f8ff" fill-opacity="1" d="M0,40L80,45C160,50,320,55,480,53C640,51,800,42,960,37C1120,32,1280,37,1360,40L1440,43L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
-    </svg>
-  </div>
 
   <div class="treatments-container">
     <div class="treatments-header" data-aos="fade-up">
@@ -712,13 +700,13 @@
 
     <!-- Tabs -->
     <div class="treatment-tabs" data-aos="fade-up" data-aos-delay="100">
-      <button class="tab-btn active" data-tab="acupuncture"><i class="fas fa-circle-nodes"></i> Acupuncture</button>
-      <button class="tab-btn" data-tab="varma"><i class="fas fa-hands"></i> Varma</button>
-      <button class="tab-btn" data-tab="cupping"><i class="fas fa-circle-half-stroke"></i> Cupping</button>
-      <button class="tab-btn" data-tab="chiro"><i class="fas fa-bone"></i> Chiropractic</button>
-      <button class="tab-btn" data-tab="reflexology"><i class="fas fa-shoe-prints"></i> Reflexology</button>
-      <button class="tab-btn" data-tab="sports"><i class="fas fa-person-running"></i> Sports Rehab</button>
-      <button class="tab-btn" data-tab="occupational"><i class="fas fa-briefcase-medical"></i> Occupational</button>
+      <button class="tab-btn active" data-tab="acupuncture"    onclick="switchTab(this)"><i class="fas fa-circle-nodes"></i> Acupuncture</button>
+      <button class="tab-btn"        data-tab="varma"          onclick="switchTab(this)"><i class="fas fa-hands"></i> Varma</button>
+      <button class="tab-btn"        data-tab="cupping"        onclick="switchTab(this)"><i class="fas fa-circle-half-stroke"></i> Cupping</button>
+      <button class="tab-btn"        data-tab="chiro"          onclick="switchTab(this)"><i class="fas fa-bone"></i> Chiropractic</button>
+      <button class="tab-btn"        data-tab="reflexology"    onclick="switchTab(this)"><i class="fas fa-shoe-prints"></i> Reflexology</button>
+      <button class="tab-btn"        data-tab="sports"         onclick="switchTab(this)"><i class="fas fa-person-running"></i> Sports Rehab</button>
+      <button class="tab-btn"        data-tab="occupational"   onclick="switchTab(this)"><i class="fas fa-briefcase-medical"></i> Occupational</button>
     </div>
 
     <!-- Panels -->
@@ -1052,7 +1040,7 @@
       <a href="#contact" class="btn btn-white">
         <i class="fas fa-calendar-check"></i> Book Appointment
       </a>
-      <a href="https://wa.me/" data-whatsapp class="btn btn-secondary">
+      <a href="https://wa.me/" data-whatsapp class="btn btn-secondary" target="_blank" rel="noopener">
         <i class="fab fa-whatsapp"></i> WhatsApp Consultation
       </a>
     </div>
@@ -1069,7 +1057,7 @@
 
     <div class="reviews-stats" data-aos="fade-up" data-aos-delay="100">
       <div class="review-stat">
-        <div class="review-stat-value">★ 4.9</div>
+        <div class="review-stat-value" id="stat-avg-rating">★ 4.9</div>
         <div class="review-stat-label">Average Rating</div>
       </div>
       <div class="review-stat">
@@ -1079,6 +1067,10 @@
       <div class="review-stat">
         <div class="review-stat-value">98%</div>
         <div class="review-stat-label">Satisfaction Rate</div>
+      </div>
+      <div class="review-stat" id="stat-review-count-wrap" hidden>
+        <div class="review-stat-value" id="stat-review-count">0</div>
+        <div class="review-stat-label">Verified Reviews</div>
       </div>
     </div>
 
@@ -1157,7 +1149,7 @@
     <!-- Review Form -->
     <div class="review-form-wrap" data-aos="fade-up" data-aos-delay="100" style="margin-top:60px">
       <h3 class="review-form-title">Share Your Experience</h3>
-      <form id="review-form">
+      <form id="review-form" action="javascript:void(0)" novalidate>
         <div class="star-rating">
           <input type="radio" id="star5" name="rating" value="5" />
           <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
@@ -1193,7 +1185,7 @@
           <label>Your Review *</label>
           <textarea name="review_text" required placeholder="Share your experience with us..."></textarea>
         </div>
-        <button type="submit" class="form-submit">
+        <button type="button" class="form-submit">
           <i class="fas fa-paper-plane"></i> Submit Review
         </button>
       </form>
@@ -1302,7 +1294,7 @@
         </div>
         <div class="faq-answer">
           <div class="faq-answer-inner">
-            You can book in three easy ways: (1) Fill in the appointment form below on this page — we'll call you to confirm within 24 hours. (2) Click the WhatsApp button on this page to chat with us instantly. (3) Call us directly at <span data-config="clinic.phone">+91 98765 43210</span>. Walk-ins are also welcome, but we recommend booking in advance to secure your preferred time slot.
+            You can book in three easy ways: (1) Fill in the appointment form below on this page — we'll call you to confirm within 24 hours. (2) Click the WhatsApp button on this page to chat with us instantly. (3) Call us directly at <span data-config="clinic.phone">+91 90928 95442</span>. Walk-ins are also welcome, but we recommend booking in advance to secure your preferred time slot.
           </div>
         </div>
       </div>
@@ -1323,7 +1315,7 @@
   <div class="contact-container">
     <!-- Form -->
     <div class="contact-form-side" data-aos="fade-right">
-      <form id="contact-form">
+      <form id="contact-form" action="javascript:void(0)" novalidate>
         <div class="form-row">
           <div class="form-group">
             <label>Full Name *</label>
@@ -1331,7 +1323,7 @@
           </div>
           <div class="form-group">
             <label>Phone Number *</label>
-            <input type="tel" name="phone" required placeholder="+91 98765 43210" />
+            <input type="tel" name="phone" required placeholder="10-digit mobile number" />
           </div>
         </div>
         <div class="form-group">
@@ -1358,11 +1350,30 @@
             <input type="date" name="date" />
           </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Preferred Branch</label>
+            <select name="branch">
+              <option value="">No preference</option>
+              <option>Erode</option>
+              <option>Tiruppur</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Preferred Time</label>
+            <select name="slot">
+              <option value="">Any time</option>
+              <option>Morning</option>
+              <option>Afternoon</option>
+              <option>Evening</option>
+            </select>
+          </div>
+        </div>
         <div class="form-group">
           <label>Message / Symptoms</label>
           <textarea name="message" placeholder="Briefly describe your condition or concern..."></textarea>
         </div>
-        <button type="submit" class="form-submit">
+        <button type="button" class="form-submit">
           <span class="btn-text">Send Appointment Request</span>
           <span class="loading-spinner" style="display:none"></span>
           <i class="fas fa-arrow-right"></i>
@@ -1382,14 +1393,14 @@
         <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
         <div class="contact-info-text">
           <strong>Call Us</strong>
-          <a href="#" data-phone><span class="config-phone-text">+91 98765 43210</span></a>
+          <a href="#" data-phone><span class="config-phone-text">+91 90928 95442</span></a>
         </div>
       </div>
       <div class="contact-info-card">
         <div class="contact-info-icon"><i class="fab fa-whatsapp"></i></div>
         <div class="contact-info-text">
           <strong>WhatsApp</strong>
-          <a href="#" data-whatsapp>Chat with us instantly</a>
+          <a href="#" data-whatsapp target="_blank" rel="noopener">Chat with us instantly</a>
         </div>
       </div>
       <div class="contact-info-card">
@@ -1419,10 +1430,7 @@
         <a href="#" data-social="facebook" class="social-btn facebook" title="Facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
-        <a href="#" data-social="youtube" class="social-btn youtube" title="YouTube">
-          <i class="fab fa-youtube"></i>
-        </a>
-        <a href="https://wa.me/" data-whatsapp class="social-btn" style="background:linear-gradient(135deg,#25d366,#128c7e)" title="WhatsApp">
+        <a href="https://wa.me/" data-whatsapp class="social-btn" style="background:linear-gradient(135deg,#25d366,#128c7e)" title="WhatsApp" target="_blank" rel="noopener">
           <i class="fab fa-whatsapp"></i>
         </a>
       </div>
@@ -1433,7 +1441,7 @@
 <!-- ======================== FOOTER ======================== -->
 <footer id="footer">
   <div class="footer-wave">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
       <path fill="#0d1b2a" fill-opacity="1" d="M0,32L80,37C160,43,320,53,480,53C640,53,800,43,960,37C1120,32,1280,37,1360,40L1440,43L1440,80L1360,80C1280,80,1120,80,960,80C800,80,640,80,480,80C320,80,160,80,80,80L0,80Z"></path>
     </svg>
   </div>
@@ -1456,8 +1464,7 @@
       <div class="footer-social">
         <a href="#" data-social="instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
         <a href="#" data-social="facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" data-social="youtube" title="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="https://wa.me/" data-whatsapp title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://wa.me/" data-whatsapp title="WhatsApp" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
       </div>
     </div>
 
@@ -1491,8 +1498,8 @@
     <div class="footer-col">
       <div class="footer-col-title">Contact</div>
       <div class="footer-links">
-        <a href="#" data-phone><i class="fas fa-phone fa-fw"></i> <span class="config-phone-text">+91 98765 43210</span></a>
-        <a href="https://wa.me/" data-whatsapp><i class="fab fa-whatsapp fa-fw"></i> WhatsApp Us</a>
+        <a href="#" data-phone><i class="fas fa-phone fa-fw"></i> <span class="config-phone-text">+91 90928 95442</span></a>
+        <a href="https://wa.me/" data-whatsapp target="_blank" rel="noopener"><i class="fab fa-whatsapp fa-fw"></i> WhatsApp Us</a>
         <a href="#" data-email><i class="fas fa-envelope fa-fw"></i> Email Us</a>
         <a href="#"><i class="fas fa-location-dot fa-fw"></i> <span data-config="clinic.address">Tiruppur & Erode, Tamil Nadu</span></a>
       </div>
@@ -1518,8 +1525,15 @@
   </div>
 </footer>
 
+<!-- ======================== MOBILE ACTION BAR ======================== -->
+<nav class="mobile-bar" aria-label="Quick actions">
+  <a href="#" data-phone><i class="fas fa-phone"></i><span>Call</span></a>
+  <a href="#contact" class="mobile-bar-main"><i class="fas fa-calendar-check"></i><span>Book</span></a>
+  <a href="https://wa.me/" data-whatsapp target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>
+</nav>
+
 <!-- ======================== FLOATING BUTTONS ======================== -->
-<a href="https://wa.me/" data-whatsapp class="whatsapp-float" title="Chat on WhatsApp">
+<a href="https://wa.me/" data-whatsapp class="whatsapp-float" title="Chat on WhatsApp" target="_blank" rel="noopener">
   <div class="whatsapp-pulse"></div>
   <span class="whatsapp-tooltip">Chat on WhatsApp</span>
   <i class="fab fa-whatsapp"></i>
@@ -1543,7 +1557,7 @@
     </div>
     <div class="form-group">
       <label>Phone Number</label>
-      <input type="tel" id="qb-phone" placeholder="+91 98765 43210" />
+      <input type="tel" id="qb-phone" placeholder="10-digit mobile number" />
     </div>
     <div class="form-group">
       <label>Treatment</label>
@@ -1601,7 +1615,7 @@
     </div>
     <div class="form-group">
       <label>Phone Number</label>
-      <input type="tel" id="offer-phone" placeholder="+91 98765 43210" />
+      <input type="tel" id="offer-phone" placeholder="10-digit mobile number" />
     </div>
     <button class="form-submit offer-claim-btn">
       <i class="fab fa-whatsapp"></i> Claim Free Consultation

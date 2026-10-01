@@ -5,10 +5,10 @@
 "use strict";
 
 /* ---------- SUPABASE INIT ---------- */
-let supabase = null;
+let sb = null;
 function initSupabase() {
   if (CONFIG.supabase.url !== "YOUR_SUPABASE_URL" && typeof window.supabase !== "undefined") {
-    supabase = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.anonKey);
+    sb = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.anonKey);
   }
 }
 
@@ -52,9 +52,10 @@ function initCursorGlow() {
   const cursor = document.querySelector(".cursor-glow");
   if (!cursor || window.innerWidth < 768) return;
   document.addEventListener("mousemove", (e) => {
+    cursor.classList.add("on");
     cursor.style.left = e.clientX + "px";
     cursor.style.top = e.clientY + "px";
-  });
+  }, { passive: true });
 }
 
 /* ---------- NAVBAR ---------- */
@@ -64,23 +65,22 @@ function initNavbar() {
   const navLinks = document.querySelector(".nav-links");
   const links = document.querySelectorAll(".nav-links a[href^='#']");
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 60) navbar.classList.add("scrolled");
-    else navbar.classList.remove("scrolled");
+  const onScroll = () => {
+    navbar.classList.toggle("scrolled", window.scrollY > 60);
     updateActiveLink();
-  });
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 
-  hamburger?.addEventListener("click", () => {
-    hamburger.classList.toggle("open");
-    navLinks.classList.toggle("open");
-  });
-
-  navLinks?.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", () => {
-      hamburger?.classList.remove("open");
-      navLinks.classList.remove("open");
-    });
-  });
+  const setMenu = (open) => {
+    hamburger?.classList.toggle("open", open);
+    navLinks?.classList.toggle("open", open);
+    hamburger?.setAttribute("aria-expanded", String(open));
+    hamburger?.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+  hamburger?.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
+  navLinks?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 
   // Smooth scroll
   links.forEach((link) => {
@@ -98,10 +98,10 @@ function initNavbar() {
 
 function updateActiveLink() {
   const links = document.querySelectorAll(".nav-links a[href^='#']");
-  const sections = document.querySelectorAll("section[id], div[id='home']");
+  const sections = document.querySelectorAll("section[id]");
   let current = "";
   sections.forEach((sec) => {
-    if (window.scrollY >= sec.offsetTop - 120) current = sec.getAttribute("id");
+    if (window.scrollY >= sec.offsetTop - 140) current = sec.getAttribute("id");
   });
   links.forEach((a) => {
     a.classList.toggle("active", a.getAttribute("href") === `#${current}`);
@@ -208,8 +208,8 @@ function initSwiper() {
   new Swiper(".reviews-swiper", {
     slidesPerView: 1,
     spaceBetween: 24,
-    loop: true,
-    autoplay: { delay: 5000, disableOnInteraction: false },
+    rewind: true,
+    autoplay: { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true },
     pagination: { el: ".swiper-pagination", clickable: true },
     breakpoints: {
       640: { slidesPerView: 2 },
@@ -218,58 +218,30 @@ function initSwiper() {
   });
 }
 
-/* ---------- TREATMENT TABS (direct style, no CSS class dependency) ---------- */
+/* ==========================================================
+   GLOBAL TAB SWITCHER — called by inline onclick on buttons
+   ========================================================== */
+window.switchTab = function (btn) {
+  const key = btn && btn.dataset && btn.dataset.tab;
+  if (!key) return;
+
+  /* update button active states */
+  document.querySelectorAll(".tab-btn").forEach((b) =>
+    b.classList.toggle("active", b === btn)
+  );
+
+  /* show/hide panels — clear inline styles so CSS classes take full control */
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.removeAttribute("style");
+    panel.classList.toggle("active", panel.id === "tab-" + key);
+  });
+};
+
+/* ---------- TREATMENT TABS ---------- */
 function initTabs() {
-  const btns   = document.querySelectorAll(".tab-btn");
-  const panels = document.querySelectorAll(".tab-panel");
-
-  if (!btns.length || !panels.length) return;
-
-  // Force every element inside a panel to be fully visible (inline style wins)
-  function showPanel(panel) {
-    panel.style.display = "block";
-    panel.classList.add("active");
-    // Remove any scroll-reveal hiding
-    panel.classList.remove("sr-hidden");
-    panel.style.opacity  = "1";
-    panel.style.transform = "none";
-    panel.style.visibility = "visible";
-    // Force all descendants visible — inline !important-equivalent via setProperty
-    panel.querySelectorAll("*").forEach((el) => {
-      el.style.setProperty("opacity",    "1",       "important");
-      el.style.setProperty("visibility", "visible", "important");
-      el.style.setProperty("transform",  "none",    "important");
-      el.classList.remove("sr-hidden");
-    });
-  }
-
-  function hidePanel(panel) {
-    panel.style.display = "none";
-    panel.classList.remove("active");
-  }
-
-  // Initialise — show first active panel, hide rest
-  panels.forEach((p) => {
-    if (p.classList.contains("active")) showPanel(p);
-    else hidePanel(p);
-  });
-
-  // Tab button clicks
-  btns.forEach((btn) => {
-    btn.onclick = function () {
-      const target = this.dataset.tab;
-      if (!target) return;
-
-      // Update button states
-      btns.forEach((b) => b.classList.remove("active"));
-      this.classList.add("active");
-
-      // Hide all panels, show target
-      panels.forEach(hidePanel);
-      const panel = document.getElementById("tab-" + target);
-      if (panel) showPanel(panel);
-    };
-  });
+  /* Activate the first tab button — CSS handles panel visibility via .tab-panel.active */
+  const firstBtn = document.querySelector(".tab-btn[data-tab='acupuncture']");
+  if (firstBtn) window.switchTab(firstBtn);
 }
 
 /* ---------- BACK TO TOP ---------- */
@@ -282,26 +254,69 @@ function initBackToTop() {
   btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 }
 
-/* ---------- OFFER POPUP ---------- */
+/* ---------- OFFER POPUP + COUPON CODE ---------- */
 function initOfferPopup() {
   if (!CONFIG.offer.enabled) return;
   const popup = document.getElementById("offer-popup");
   if (!popup) return;
 
-  setTimeout(() => popup.classList.add("show"), CONFIG.offer.delay);
+  // Show at most once per browser session, and never again once dismissed or claimed
+  let seen = false;
+  try { seen = sessionStorage.getItem("shatursh-offer") === "1"; } catch (_) {}
+  const markSeen = () => { try { sessionStorage.setItem("shatursh-offer", "1"); } catch (_) {} };
+  if (!seen) setTimeout(() => popup.classList.add("show"), CONFIG.offer.delay);
 
-  popup.querySelector(".offer-close")?.addEventListener("click", () => {
-    popup.classList.remove("show");
+  popup.querySelector(".offer-close")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    popup.classList.remove("show", "expanded");
+    markSeen();
   });
+  // On phones the popup is a compact strip; tapping the header expands the form
+  popup.querySelector(".offer-popup-header")?.addEventListener("click", () => popup.classList.toggle("expanded"));
 
   popup.querySelector(".offer-claim-btn")?.addEventListener("click", () => {
-    const name = popup.querySelector("#offer-name")?.value.trim();
+    const name  = popup.querySelector("#offer-name")?.value.trim();
     const phone = popup.querySelector("#offer-phone")?.value.trim();
-    if (!name || !phone) { showToast("Please fill in your name and phone.", "error"); return; }
-    const msg = encodeURIComponent(`Hi! I'd like to claim my free first consultation.\nName: ${name}\nPhone: ${phone}`);
+    if (!name || !phone) {
+      showToast("Please fill in your name and phone number.", "error");
+      return;
+    }
+
+    markSeen();
+    // Generate a unique coupon code
+    const code = "SHC-FREE-" + Math.floor(1000 + Math.random() * 9000);
+
+    // Show coupon in popup
+    const body = popup.querySelector(".offer-popup-body");
+    if (body) {
+      body.innerHTML = `
+        <div style="text-align:center;padding:8px 0">
+          <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:16px">
+            Your free consultation coupon code:
+          </p>
+          <div style="background:var(--pale-blue);border:2px dashed var(--teal);
+               border-radius:12px;padding:16px 24px;margin-bottom:16px">
+            <span style="font-size:1.5rem;font-weight:800;color:var(--ocean-blue);
+                  letter-spacing:3px">${code}</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:20px">
+            Show this code when you arrive at the clinic<br>or mention it on WhatsApp.
+          </p>
+          <button onclick="navigator.clipboard&&navigator.clipboard.writeText('${code}').then(()=>window.showToast&&showToast('Coupon code copied!','success'))"
+            style="background:var(--pale-blue);border:none;border-radius:8px;
+                   padding:8px 20px;color:var(--ocean-blue);font-weight:700;
+                   cursor:pointer;margin-bottom:12px;font-size:0.85rem">
+            <i class="fas fa-copy"></i> Copy Code
+          </button>
+        </div>`;
+    }
+
+    // Open WhatsApp with coupon
+    const msg = encodeURIComponent(
+      `Hi Dr. Nithin! I'd like to claim my FREE first consultation.\nName: ${name}\nPhone: ${phone}\nCoupon Code: ${code}`
+    );
     window.open(`https://wa.me/${CONFIG.clinic.whatsapp}?text=${msg}`, "_blank");
-    popup.classList.remove("show");
-    showToast("Great! Opening WhatsApp to confirm your free consultation.", "success");
+    showToast("Coupon generated! Opening WhatsApp to confirm.", "success");
   });
 }
 
@@ -310,54 +325,102 @@ function initContactForm() {
   const form = document.getElementById("contact-form");
   if (!form) return;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector(".form-submit");
-    const successEl = form.querySelector(".form-success");
-    const errorEl = form.querySelector(".form-error");
+  /* Prevent ANY native form submission */
+  form.onsubmit = (e) => { e && e.preventDefault(); return false; };
+
+  const btn       = form.querySelector(".form-submit");
+  const successEl = form.querySelector(".form-success");
+  const errorEl   = form.querySelector(".form-error");
+  if (!btn) return;
+
+  const val = (n) => ((form.elements[n] || {}).value || "").trim();
+  const dateInput = form.elements["date"];
+  if (dateInput) dateInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const flag = (n, bad) => { const el = form.elements[n]; if (el) el.classList.toggle("invalid", bad); return bad; };
+  form.addEventListener("input", (e) => e.target.classList?.remove("invalid"));
+
+  let busy = false;
+  async function handleSubmit() {
+    if (busy) return;
+    const name = val("name"), phone = val("phone"), email = val("email");
+    const service = val("service"), date = val("date");
+    const branch = val("branch"), slot = val("slot");
+    const message = [val("message"), branch && `Branch: ${branch}`, slot && `Preferred time: ${slot}`].filter(Boolean).join("\n");
+
+    if (flag("name", !name)) { showToast("Please enter your name.", "error"); return; }
+    const digits = phone.replace(/\D/g, "");
+    if (flag("phone", digits.length < 10 || digits.length > 13)) { showToast("Please enter a valid phone number.", "error"); return; }
+    if (flag("email", !!email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))) { showToast("Please enter a valid email address.", "error"); return; }
+    if (flag("service", !service)) { showToast("Please select a treatment.", "error"); return; }
+    if (flag("date", !!date && dateInput && dateInput.min && date < dateInput.min)) { showToast("Please choose today or a future date.", "error"); return; }
+
     const spinner = btn.querySelector(".loading-spinner");
     const btnText = btn.querySelector(".btn-text");
-
-    successEl.classList.remove("show");
-    errorEl.classList.remove("show");
-
+    busy = true;
+    successEl?.classList.remove("show");
+    errorEl?.classList.remove("show");
     btn.disabled = true;
     if (spinner) spinner.style.display = "inline-block";
     if (btnText) btnText.textContent = "Sending...";
 
-    const data = {
-      name: form.name.value.trim(),
-      phone: form.phone.value.trim(),
-      email: form.email?.value.trim() || "",
-      service: form.service.value,
-      date: form.date?.value || "",
-      message: form.message.value.trim(),
-      created_at: new Date().toISOString(),
-    };
+    const created_at = new Date().toISOString();
+    /* Row stored in Supabase — only real table columns */
+    const row = { name, phone, email, service, message, date: date || null, created_at };
+    /* Extra template params for the EmailJS notification */
+    /* WhatsApp-ready number (country code + 10 digits) and a readable IST timestamp for the email template */
+    let waNum = phone.replace(/\D/g, "");
+    if (waNum.length === 11 && waNum.startsWith("0")) waNum = waNum.slice(1);
+    if (waNum.length === 10) waNum = "91" + waNum;
+    const submitted_at = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "medium", timeStyle: "short" }) + " IST";
+    const mail = { ...row, email: email || "Not provided", date: date || "Not specified", message: message || "No message", phone_digits: waNum, submitted_at, to_email: CONFIG.clinic.email, cc_email: CONFIG.clinic.ccEmail, from_name: name, reply_to: email || CONFIG.clinic.email, clinic_name: CONFIG.clinic.name };
+
+    let delivered = false;
+    try {
+      if (sb) {
+        const { error } = await sb.from("contacts").insert([row]);
+        if (error) console.warn("Supabase save:", error.message); else delivered = true;
+      }
+    } catch (e) { console.warn("Supabase:", e); }
 
     try {
-      if (supabase) {
-        const { error } = await supabase.from("contacts").insert([data]);
-        if (error) throw error;
-      }
-
       if (CONFIG.emailjs.serviceId !== "YOUR_SERVICE_ID" && typeof emailjs !== "undefined") {
-        await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, data, CONFIG.emailjs.publicKey);
+        await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, mail);
+        delivered = true;
+        // CC handled in code: send the same email to the CC address (skipped if it is the same as the main recipient)
+        const cc = CONFIG.clinic.ccEmail;
+        if (cc && cc.toLowerCase() !== String(mail.to_email).toLowerCase()) {
+          emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, { ...mail, to_email: cc })
+            .catch((e) => console.warn("EmailJS cc:", e));
+        }
       }
+    } catch (e) { console.warn("EmailJS:", e); }
 
-      successEl.classList.add("show");
+    if (delivered) {
+      successEl?.classList.add("show");
       form.reset();
-      triggerConfetti();
-      showToast("Appointment request sent! We'll contact you shortly.", "success");
-    } catch (err) {
-      console.error(err);
-      errorEl.classList.add("show");
-      showToast("Something went wrong. Please try calling us directly.", "error");
-    } finally {
-      btn.disabled = false;
-      if (spinner) spinner.style.display = "none";
-      if (btnText) btnText.textContent = "Send Request";
+      try { triggerConfetti(); } catch (_) {}
+      showToast("Appointment request received! We'll call you within 24 hours.", "success");
+    } else {
+      /* Nothing reached the clinic — be honest and hand the patient a WhatsApp fallback */
+      const wa = `https://wa.me/${CONFIG.clinic.whatsapp}?text=` + encodeURIComponent(
+        `Hi Dr. Nithin! I'd like to book an appointment.\nName: ${name}\nPhone: ${phone}\nTreatment: ${service}` +
+        (date ? `\nPreferred date: ${date}` : "") + (message ? `\nNotes: ${message}` : ""));
+      if (errorEl) {
+        errorEl.innerHTML = `<i class="fas fa-circle-exclamation"></i> We couldn't send your request online. Please <a href="${wa}" target="_blank" rel="noopener">send it on WhatsApp</a> or call us directly.`;
+        errorEl.classList.add("show");
+      }
+      showToast("Could not send your request. Please use WhatsApp or call us.", "error");
     }
+
+    busy = false;
+    btn.disabled = false;
+    if (spinner) spinner.style.display = "none";
+    if (btnText) btnText.textContent = "Send Appointment Request";
+  }
+
+  btn.onclick = handleSubmit;
+  form.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") { e.preventDefault(); handleSubmit(); }
   });
 }
 
@@ -366,50 +429,59 @@ function initReviewForm() {
   const form = document.getElementById("review-form");
   if (!form) return;
 
+  /* Prevent native submit */
+  form.onsubmit = (e) => { e && e.preventDefault(); return false; };
+
   let rating = 0;
-  const stars = form.querySelectorAll(".star-rating input");
-  stars.forEach((star) => {
+  form.querySelectorAll(".star-rating input").forEach((star) => {
     star.addEventListener("change", () => { rating = parseInt(star.value); });
   });
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const btn = form.querySelector(".form-submit");
+  if (!btn) return;
+
+  async function handleReview() {
     if (rating === 0) { showToast("Please select a star rating.", "error"); return; }
 
-    const btn = form.querySelector(".form-submit");
+    const name = (form.elements["reviewer_name"] || {}).value?.trim() || "";
+    const text = (form.elements["review_text"]   || {}).value?.trim() || "";
+    if (!name) { showToast("Please enter your name.", "error"); return; }
+    if (!text) { showToast("Please write your review.", "error"); return; }
+
     btn.disabled = true;
 
     const data = {
-      name: form.reviewer_name.value.trim(),
+      name,
       rating,
-      text: form.review_text.value.trim(),
-      service: form.reviewer_service?.value || "",
+      text,
+      service: (form.elements["reviewer_service"] || {}).value || "",
       created_at: new Date().toISOString(),
       approved: false,
     };
 
     try {
-      if (supabase) {
-        const { error } = await supabase.from("reviews").insert([data]);
-        if (error) throw error;
-      }
+      if (!sb) throw new Error("Reviews database is not connected");
+      const { error } = await sb.from("reviews").insert([data]);
+      if (error) throw error;
       showToast("Thank you for your review! It will appear after approval.", "success");
       form.reset();
       rating = 0;
     } catch (err) {
-      console.error(err);
-      showToast("Could not submit review. Please try again.", "error");
+      console.error("Review form error:", err);
+      showToast("Sorry, we couldn't submit your review right now. Please try again later.", "error");
     } finally {
       btn.disabled = false;
     }
-  });
+  }
+
+  btn.onclick = handleReview;
 }
 
 /* ---------- LOAD REVIEWS ---------- */
 async function loadReviews() {
-  if (!supabase) return;
+  if (!sb) return;
   try {
-    const { data: reviews } = await supabase
+    const { data: reviews } = await sb
       .from("reviews")
       .select("*")
       .eq("approved", true)
@@ -421,24 +493,61 @@ async function loadReviews() {
     const wrapper = document.querySelector(".reviews-swiper .swiper-wrapper");
     if (!wrapper) return;
 
-    wrapper.innerHTML = reviews.map((r) => `
+    wrapper.innerHTML = reviews.map((r) => {
+      const stars = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 0)));
+      const name = String(r.name || "Patient");
+      return `
       <div class="swiper-slide">
         <div class="review-card">
-          <div class="review-stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</div>
-          <p class="review-text">${escapeHtml(r.text)}</p>
+          <div class="review-stars">${"★".repeat(stars)}${"☆".repeat(5 - stars)}</div>
+          <p class="review-text">${escapeHtml(r.text || "")}</p>
           <div class="review-author">
-            <div class="review-author-avatar">${r.name.charAt(0).toUpperCase()}</div>
+            <div class="review-author-avatar">${escapeHtml(name.charAt(0).toUpperCase())}</div>
             <div>
-              <div class="review-author-name">${escapeHtml(r.name)}</div>
+              <div class="review-author-name">${escapeHtml(name)}</div>
               <div class="review-author-meta">${r.service ? escapeHtml(r.service) : "Patient"}</div>
             </div>
           </div>
         </div>
-      </div>
-    `).join("");
+      </div>`;
+    }).join("");
+
+    /* live stats from real approved reviews */
+    const rated = reviews.map((r) => Number(r.rating)).filter((n) => n >= 1 && n <= 5);
+    if (rated.length) {
+      const avg = rated.reduce((a, b) => a + b, 0) / rated.length;
+      const avgEl = document.getElementById("stat-avg-rating");
+      if (avgEl) avgEl.textContent = "★ " + avg.toFixed(1);
+      const cnt = document.getElementById("stat-review-count");
+      const wrap = document.getElementById("stat-review-count-wrap");
+      if (cnt && wrap) { cnt.textContent = reviews.length + (reviews.length === 12 ? "+" : ""); wrap.hidden = false; }
+    }
   } catch (err) {
     console.error("Could not load reviews:", err);
   }
+}
+
+/* ---------- SEO: LOCAL BUSINESS STRUCTURED DATA (built from config.js) ---------- */
+function injectStructuredData() {
+  const c = CONFIG.clinic;
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "MedicalClinic",
+    name: c.name,
+    description: c.description,
+    image: c.doctor.imageUrl,
+    logo: c.logoUrl,
+    telephone: c.phone,
+    email: c.email,
+    address: { "@type": "PostalAddress", addressRegion: "Tamil Nadu", addressCountry: "IN", streetAddress: c.address },
+    medicalSpecialty: "Acupuncture",
+    founder: { "@type": "Person", name: c.doctor.name, jobTitle: c.doctor.title },
+    sameAs: Object.values(CONFIG.social).filter((u) => u && u !== "#"),
+  };
+  const tag = document.createElement("script");
+  tag.type = "application/ld+json";
+  tag.textContent = JSON.stringify(data);
+  document.head.appendChild(tag);
 }
 
 /* ---------- TOAST NOTIFICATION ---------- */
@@ -452,11 +561,13 @@ function showToast(message, type = "success") {
 
   const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
   toast.className = `toast ${type === "error" ? "error" : ""}`;
-  toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+  toast.innerHTML = `<i class="fas ${icon}"></i><span></span>`;
+  toast.querySelector("span").textContent = message;
 
+  clearTimeout(showToast._t);
   requestAnimationFrame(() => {
     toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 4000);
+    showToast._t = setTimeout(() => toast.classList.remove("show"), 4500);
   });
 }
 
@@ -501,8 +612,7 @@ function populateConfig() {
     document.querySelectorAll("[data-social='instagram']").forEach((el) => (el.href = CONFIG.social.instagram));
   if (CONFIG.social.facebook !== "#")
     document.querySelectorAll("[data-social='facebook']").forEach((el) => (el.href = CONFIG.social.facebook));
-  if (CONFIG.social.youtube !== "#")
-    document.querySelectorAll("[data-social='youtube']").forEach((el) => (el.href = CONFIG.social.youtube));
+  // YouTube removed — no YouTube social links in HTML
   // Offer popup
   const offerTitle = document.getElementById("offer-title");
   const offerDesc = document.getElementById("offer-desc");
@@ -517,37 +627,44 @@ function escapeHtml(str) {
   return el.innerHTML;
 }
 
-/* ---------- INIT ALL ---------- */
+/* ---------- INIT ALL (each wrapped in try-catch so one bug never blocks another) ---------- */
 document.addEventListener("DOMContentLoaded", () => {
-  initSupabase();
-  initPreloader();
-  initCursorGlow();
-  initNavbar();
-  initAOS();
-  initParticles();
-  initStatsCounter();
-  initTabs();
-  initBackToTop();
-  initOfferPopup();
-  initContactForm();
-  initReviewForm();
-  initMarquee();
-  populateConfig();
-  loadReviews().then(initSwiper);
-  initLazyIframes();
-  initSpecModal();
-  // Next-level features
-  initScrollProgress();
-  initDarkMode();
-  initTypewriter();
-  initWaterRipple();
-  initTiltCards();
-  initMagneticButtons();
-  initSymptomFinder();
-  initFAQ();
-  initQuickBook();
-  initRingStats();
-  initParallax();
+  const safe = (label, fn) => { try { fn(); } catch (e) { console.warn(`[${label}]`, e); } };
+
+  // EmailJS initialization (v4 API)
+  safe("emailjs-init", () => {
+    if (typeof emailjs !== "undefined" && CONFIG.emailjs.publicKey !== "YOUR_PUBLIC_KEY") {
+      emailjs.init({ publicKey: CONFIG.emailjs.publicKey });
+    }
+  });
+
+  safe("config",        populateConfig);    // CRITICAL — run FIRST so WhatsApp/phone links are set immediately
+  safe("supabase",      initSupabase);
+  safe("preloader",     initPreloader);
+  safe("cursor",        initCursorGlow);
+  safe("navbar",        initNavbar);
+  safe("scrollReveal",  initAOS);
+  safe("particles",     initParticles);
+  safe("stats",         initStatsCounter);
+  safe("tabs",          initTabs);
+  safe("backToTop",     initBackToTop);
+  safe("offerPopup",    initOfferPopup);
+  safe("contactForm",   initContactForm);   // CRITICAL — must never be blocked
+  safe("reviewForm",    initReviewForm);    // CRITICAL
+  safe("marquee",       initMarquee);
+  safe("lazyIframes",   initLazyIframes);
+  safe("specModal",     initSpecModal);
+  safe("scrollProgress",initScrollProgress);
+  safe("darkMode",      initDarkMode);
+  safe("waterRipple",   initWaterRipple);
+  safe("tiltCards",     initTiltCards);
+  safe("magnet",        initMagneticButtons);
+  safe("symptomFinder", initSymptomFinder);
+  safe("faq",           initFAQ);
+  safe("quickBook",     initQuickBook);
+  safe("ringStats",     initRingStats);
+  safe("schema",        injectStructuredData);
+  loadReviews().then(initSwiper).catch(()=>{});
 });
 
 /* =====================================================
@@ -587,52 +704,28 @@ function initScrollProgress() {
 function initDarkMode() {
   const toggle = document.querySelector(".dark-mode-toggle");
   if (!toggle) return;
-  const saved = localStorage.getItem("shatursh-theme");
-  if (saved === "dark") document.body.setAttribute("data-theme", "dark");
-  toggle.addEventListener("click", () => {
-    const isDark = document.body.getAttribute("data-theme") === "dark";
-    document.body.setAttribute("data-theme", isDark ? "light" : "dark");
-    localStorage.setItem("shatursh-theme", isDark ? "light" : "dark");
-  });
-}
 
-/* ---------- TYPEWRITER (word-swap, no complex timing) ---------- */
-function initTypewriter() {
-  const el = document.querySelector(".hero-typewriter");
-  if (!el) { setTimeout(initTypewriter, 200); return; }
-
-  const words = [
-    "Acupuncture", "Varma Therapy", "Cupping & Hijama",
-    "Chiropractic Care", "Reflexology", "Pain Management",
-    "Sports Rehab", "Holistic Healing", "Auricular Therapy",
-    "Sujok Therapy"
-  ];
-  let wi = 0;
-
-  // Apply styles directly — no CSS inheritance uncertainty
-  el.style.cssText = [
-    "color:#ffd700", "font-weight:800", "display:inline-block",
-    "min-width:200px", "opacity:1",
-    "transition:opacity 0.35s ease, transform 0.35s ease"
-  ].join(";");
-
-  // Show first word instantly (no delay)
-  el.textContent = words[0];
-
-  function swap() {
-    el.style.opacity = "0";
-    el.style.transform = "translateY(-8px)";
-    setTimeout(() => {
-      wi = (wi + 1) % words.length;
-      el.textContent = words[wi];
-      el.style.transform = "translateY(8px)";
-      void el.offsetHeight; // force browser to notice the transform change
-      el.style.opacity = "1";
-      el.style.transform = "translateY(0)";
-    }, 360);
+  function applyTheme(dark) {
+    if (dark) {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.body.setAttribute("data-theme", "dark");
+      toggle.title = "Switch to Light Mode";
+      toggle.setAttribute("aria-label", "Switch to Light Mode");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      document.body.removeAttribute("data-theme");
+      toggle.title = "Switch to Dark Mode";
+      toggle.setAttribute("aria-label", "Switch to Dark Mode");
+    }
+    localStorage.setItem("shatursh-theme", dark ? "dark" : "light");
   }
 
-  setInterval(swap, 2600);
+  // Apply saved preference on load
+  applyTheme(localStorage.getItem("shatursh-theme") === "dark");
+
+  toggle.addEventListener("click", () => {
+    applyTheme(document.body.getAttribute("data-theme") !== "dark");
+  });
 }
 
 /* ---------- WATER RIPPLE ON CLICK ---------- */
@@ -652,7 +745,8 @@ function initWaterRipple() {
 
 /* ---------- 3D TILT CARDS ---------- */
 function initTiltCards() {
-  document.querySelectorAll(".service-card, .why-card, .process-step .process-step-num").forEach((card) => {
+  if (!window.matchMedia("(hover: hover)").matches) return;
+  document.querySelectorAll(".service-card, .why-card").forEach((card) => {
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -672,6 +766,7 @@ function initTiltCards() {
 
 /* ---------- MAGNETIC BUTTONS ---------- */
 function initMagneticButtons() {
+  if (!window.matchMedia("(hover: hover)").matches) return;
   document.querySelectorAll(".btn-primary, .btn-green, .btn-white").forEach((btn) => {
     btn.addEventListener("mousemove", (e) => {
       const rect = btn.getBoundingClientRect();
@@ -951,7 +1046,7 @@ const SYMPTOM_MAP = {
     treatments: [{ name: "Chiropractic Care", icon: "fa-bone" }, { name: "Varma Therapy", icon: "fa-hands" }, { name: "Occupational Therapy", icon: "fa-briefcase-medical" }],
   },
   "joint": {
-    icon: "fa-joint", label: "Joint Pain",
+    icon: "fa-bone", label: "Joint Pain",
     desc: "Multi-modal natural therapy addressing joint inflammation, cartilage health, and surrounding muscle tension for lasting pain relief and improved mobility.",
     treatments: [{ name: "Acupuncture Therapy", icon: "fa-circle-nodes" }, { name: "Chiropractic Care", icon: "fa-bone" }, { name: "Cupping Therapy", icon: "fa-circle-half-stroke" }],
   },
@@ -1012,13 +1107,22 @@ function initSymptomFinder() {
 
 /* ---------- FAQ ACCORDION ---------- */
 function initFAQ() {
+  const setOpen = (item, open) => {
+    item.classList.toggle("open", open);
+    item.querySelector(".faq-question")?.setAttribute("aria-expanded", String(open));
+  };
   document.querySelectorAll(".faq-question").forEach((q) => {
-    q.addEventListener("click", () => {
+    q.setAttribute("role", "button");
+    q.setAttribute("tabindex", "0");
+    q.setAttribute("aria-expanded", "false");
+    const toggle = () => {
       const item = q.closest(".faq-item");
-      const isOpen = item.classList.contains("open");
-      document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
-      if (!isOpen) item.classList.add("open");
-    });
+      const wasOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach((i) => setOpen(i, false));
+      if (!wasOpen) setOpen(item, true);
+    };
+    q.addEventListener("click", toggle);
+    q.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
   });
 }
 
@@ -1030,20 +1134,14 @@ function initQuickBook() {
   const submitBtn = document.querySelector(".quick-book-submit");
   if (!widget) return;
 
-  // Show widget after scrolling past hero
-  let widgetClosed = false;
+  // Reveal the side tab once the visitor scrolls past the hero (the panel only opens on click)
+  const hero = document.getElementById("home");
   window.addEventListener("scroll", () => {
-    if (widgetClosed) return;
-    const hero = document.getElementById("home");
-    if (hero && window.scrollY > hero.offsetHeight * 0.8) {
-      setTimeout(() => { if (!widgetClosed) widget.classList.add("show"); }, 800);
-    }
-  }, { passive: true, once: true });
+    if (hero) widget.classList.toggle("ready", window.scrollY > hero.offsetHeight * 0.8);
+  }, { passive: true });
 
   tab?.addEventListener("click", () => widget.classList.toggle("show"));
-  closeBtn?.addEventListener("click", () => {
-    widget.classList.remove("show"); widgetClosed = true;
-  });
+  closeBtn?.addEventListener("click", () => widget.classList.remove("show"));
 
   submitBtn?.addEventListener("click", () => {
     const name = document.getElementById("qb-name")?.value.trim();
@@ -1051,9 +1149,8 @@ function initQuickBook() {
     const service = document.getElementById("qb-service")?.value;
     if (!name || !phone) { showToast("Please enter your name and phone.", "error"); return; }
     const msg = encodeURIComponent(`Hi! I'd like to book an appointment.\nName: ${name}\nPhone: ${phone}\nTreatment: ${service || "General Consultation"}`);
-    window.open(`https://wa.me/${CONFIG.clinic.whatsapp}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/${CONFIG.clinic.whatsapp}?text=${msg}`, "_blank", "noopener");
     widget.classList.remove("show");
-    widgetClosed = true;
     showToast("Opening WhatsApp to confirm your booking!", "success");
   });
 }
@@ -1073,20 +1170,6 @@ function initRingStats() {
     });
   }, { threshold: 0.5 });
   rings.forEach((r) => observer.observe(r));
-}
-
-/* ---------- PARALLAX ON HERO ---------- */
-function initParallax() {
-  const heroContent = document.querySelector(".hero-content");
-  const heroImg = document.querySelector(".hero-image-wrap");
-  if (!heroContent) return;
-  window.addEventListener("scroll", () => {
-    const scrolled = window.scrollY;
-    if (scrolled < window.innerHeight) {
-      heroContent.style.transform = `translateY(${scrolled * 0.12}px)`;
-      if (heroImg) heroImg.style.transform = `translateY(${scrolled * 0.06}px)`;
-    }
-  }, { passive: true });
 }
 
 /* ---------- CONFETTI ---------- */

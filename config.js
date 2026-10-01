@@ -27,11 +27,12 @@ const CONFIG = {
     },
     logoUrl:
       "https://vzskwrybmhzbshmlosbs.supabase.co/storage/v1/object/public/shaturshacupunctureclinic/Shaturshlogo.png",
-    phone: "+91 98765 43210",
-    whatsapp: "919876543210",
+    phone: "+91 90928 95442",
+    whatsapp: "919092895442",
     whatsappMessage:
       "Hello Dr. Nithin! I would like to book an appointment at Shatursh Healthcare Centre.",
-    email: "shaturshacupunctureclinic@gamail.com",
+    email: "shaturshacupunctureclinic@gmail.com",
+    ccEmail: "shaturshacupunctureclinic@gmail.com",
     address: "Erode & Tiruppur, Tamil Nadu",
     mapEmbedUrl:
       "https://www.openstreetmap.org/export/embed.html?bbox=77.6807%2C11.3327%2C77.7407%2C11.3727&layer=mapnik",
@@ -46,9 +47,9 @@ const CONFIG = {
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6c2t3cnlibWh6YnNobWxvc2JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzAwOTgsImV4cCI6MjA5NDYwNjA5OH0.-v-rg9Wl_qqLCMQC5eJx5yPauYTnPHUjO8CABRn2EVA",
   },
   emailjs: {
-    serviceId: "service_2abn792",
+    serviceId: "service_cl91wfc",
     templateId: "template_ujtyjzq",
-    publicKey: "oXl_g8oAo-_EVesYc",
+    publicKey: "DzjHlLilETac8LKez",
   },
   admin: {
     password: "ShatursH@2508",
